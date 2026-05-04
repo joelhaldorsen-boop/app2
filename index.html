@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MoodWear</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: -apple-system, Arial, sans-serif;
+    background: #0f0f10;
+    color: white;
+  }
+
+  .container {
+    max-width: 390px;
+    margin: auto;
+    padding-bottom: 80px;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    font-weight: 600;
+  }
+
+  .card {
+    background: #1c1c1e;
+    margin: 15px;
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  .click {
+    cursor: pointer;
+  }
+
+  img {
+    width: 90%;
+    display: block;
+    margin: 10px auto;
+    border-radius: 15px;
+  }
+
+  .list-item {
+    padding: 12px;
+    border-bottom: 1px solid #2a2a2d;
+    cursor: pointer;
+  }
+
+  .page {
+    display: none;
+  }
+
+  .active {
+    display: block;
+  }
+
+  .navbar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 390px;
+    background: #1c1c1e;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+  }
+
+  .nav-item {
+    color: gray;
+    cursor: pointer;
+  }
+
+  .nav-item.active {
+    color: #00c2ff;
+  }
+
+  .back {
+    padding: 15px;
+    color: #00c2ff;
+    cursor: pointer;
+  }
+
+  button {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .battery-bar {
+    width: 100%;
+    height: 8px;
+    background: #333;
+    border-radius: 10px;
+    margin-top: 5px;
+  }
+
+  .battery-fill {
+    width: 75%;
+    height: 100%;
+    background: linear-gradient(to right, #00ff88, #00c2ff);
+    border-radius: 10px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- START -->
+  <div id="start" class="page active">
+    <div class="topbar">MoodWear</div>
+
+    <div class="card">
+      Velg profil:<br><br>
+      <button onclick="setGender('male')">Gutt</button>
+      <button onclick="setGender('female')">Jente</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="page">
+    <div class="topbar">
+      <div>MoodWear</div>
+      <div>Online</div>
+    </div>
+
+    <img id="productImage" src="">
+
+    <div class="card">
+      Batteri 75%
+      <div class="battery-bar">
+        <div class="battery-fill"></div>
+      </div>
+    </div>
+
+    <div class="card" id="menu"></div>
+  </div>
+
+  <!-- HEALTH -->
+  <div id="health" class="page">
+    <div class="topbar">Helse</div>
+
+    <div class="card">
+      Historikk:<br>
+      Stabil utvikling
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="profile" class="page">
+    <div class="topbar">Profil</div>
+
+    <div class="card">
+      Bytt profil:<br><br>
+      <button onclick="setGender('male')">Gutt</button>
+      <button onclick="setGender('female')">Jente</button>
+    </div>
+  </div>
+
+  <!-- DETAIL -->
+  <div id="detail" class="page">
+    <div class="back" onclick="goBack()">← Tilbake</div>
+
+    <div class="card">
+      <h2 id="title"></h2>
+      <p id="info"></p>
+    </div>
+  </div>
+
+</div>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="nav-item active" onclick="switchPage('dashboard', this)">Hjem</div>
+  <div class="nav-item" onclick="switchPage('health', this)">Helse</div>
+  <div class="nav-item" onclick="switchPage('profile', this)">Profil</div>
+</div>
+
+<script>
+let currentPage = "dashboard";
+let currentGender = "";
+
+// SET GENDER
+function setGender(g) {
+  currentGender = g;
+
+  const img = document.getElementById("productImage");
+  const menu = document.getElementById("menu");
+
+  if (g === "male") {
+    img.src = "male.png";
+    menu.innerHTML = `
+      <div class="list-item" onclick="openDetail('Sædkvalitet','Normal kvalitet')">Sædkvalitet</div>
+      <div class="list-item" onclick="openDetail('Testosteron','Normalt nivå')">Testosteron</div>
+      <div class="list-item" onclick="openDetail('Fertilitet','God fertilitet')">Fertilitet</div>
+    `;
+  } else {
+    img.src = "female.png";
+    menu.innerHTML = `
+      <div class="list-item" onclick="openDetail('Syklus','Dag 12 - eggløsning nærmer seg')">Syklus</div>
+      <div class="list-item" onclick="openDetail('Fruktbarhet','Høy fruktbarhet')">Fruktbarhet</div>
+      <div class="list-item" onclick="openDetail('pH-verdi','Normal verdi')">pH-verdi</div>
+    `;
+  }
+
+  switchPage('dashboard', document.querySelector('.nav-item'));
+}
+
+// SWITCH PAGE
+function switchPage(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  currentPage = page;
+}
+
+// DETAIL
+function openDetail(title, info) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById("detail").classList.add('active');
+
+  document.getElementById("title").innerText = title;
+  document.getElementById("info").innerText = info;
+}
+
+// BACK
+function goBack() {
+  switchPage(currentPage, document.querySelector('.nav-item.active'));
+}
+</script>
+
+</body>
+</html>
